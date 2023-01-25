@@ -11,11 +11,24 @@ class Chat {
   Chat({this.isChatGpt = false, required this.text});
 }
 
-class ChatGptApp extends StatefulWidget {
+class ChatGptApp extends StatelessWidget {
   const ChatGptApp({super.key});
 
   @override
-  State<ChatGptApp> createState() => _ChatGptAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: lightColorScheme,
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
+        textTheme: const TextTheme(bodyText2: TextStyle(fontSize: 20)),
+      ),
+      title: 'ChatGPT App with Flutter',
+      home: const Home(),
+    );
+  }
 }
 
 class _ChatGptAppState extends State<ChatGptApp> {
