@@ -1,3 +1,4 @@
+import 'package:chat_gpt_app/color_schemes.g.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,19 +32,38 @@ class ChatGptApp extends StatelessWidget {
   }
 }
 
-class _ChatGptAppState extends State<ChatGptApp> {
-  final _controller = TextEditingController();
-  final _scrollController = ScrollController();
-  final _conversations = <Chat>[];
-  var isQuestion = true;
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final _controller = TextEditingController();
+
+  final _scrollController = ScrollController();
+
+  final _conversations = <Chat>[
+    Chat(text: "some dummy question", isChatGpt: true),
+    Chat(text: "text"),
+    Chat(text: "text", isChatGpt: true),
+    Chat(text: "text"),
+    Chat(text: "text", isChatGpt: true),
+  ];
+
+  var isQuestion = true;
+
+  // This widget is the root of your application.
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'ChatGPT App with Flutter',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('ChatGPT App')),
-        body: SafeArea(
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('ChatGPT App')),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Expanded(
@@ -51,10 +71,27 @@ class _ChatGptAppState extends State<ChatGptApp> {
                   controller: _scrollController,
                   children: _conversations.map(
                     (e) {
-                      return Text(
-                        e.text,
-                        textAlign:
-                            e.isChatGpt ? TextAlign.start : TextAlign.end,
+                      return Align(
+                        alignment: e.isChatGpt
+                            ? Alignment.centerLeft
+                            : Alignment.centerRight,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: e.isChatGpt ? 0 : 70,
+                            right: e.isChatGpt ? 70 : 0,
+                            bottom: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: e.isChatGpt
+                                ? colorScheme.outline
+                                : colorScheme.primary,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Text(e.text, softWrap: true),
+                          ),
+                        ),
                       );
                     },
                   ).toList(),
@@ -70,17 +107,21 @@ class _ChatGptAppState extends State<ChatGptApp> {
                       setState(
                         () {
                           isQuestion = !isQuestion;
+
+                          _conversations.add(
+                            Chat(
+                              text: _controller.text,
+                              isChatGpt: isQuestion,
+                            ),
+                          );
+                          _controller.clear();
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
                             duration: const Duration(milliseconds: 100),
                             curve: Curves.easeOut,
                           );
-                          _conversations.add(
-                            Chat(text: _controller.text, isChatGpt: isQuestion),
-                          );
                         },
                       );
-                      debugPrint(_controller.text);
                     },
                     icon: const Icon(Icons.send),
                   ),
