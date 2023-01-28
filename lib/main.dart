@@ -53,8 +53,28 @@ class _HomeState extends ConsumerState<Home> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    final c = (ref.watch(chatGptProvider));
+
+    ref.listen(chatGptProvider, (previous, next) {
+      if (next != previous) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+
     return Scaffold(
-      appBar: AppBar(title: const Text('ChatGPT App')),
+      appBar: AppBar(
+        title: const Text('ChatGPT App'),
+        actions: [
+          IconButton(
+            onPressed: ref.read(chatGptProvider).clear,
+            icon: const Icon(Icons.delete),
+          )
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -63,7 +83,7 @@ class _HomeState extends ConsumerState<Home> {
               Expanded(
                 child: ListView(
                   controller: _scrollController,
-                  children: _conversations.map(
+                  children: c.map(
                     (e) {
                       return Align(
                         alignment: e.isChatGpt
@@ -98,24 +118,11 @@ class _HomeState extends ConsumerState<Home> {
                   Expanded(child: TextField(controller: _controller)),
                   IconButton(
                     onPressed: () {
-                      setState(
-                        () {
-                          isQuestion = !isQuestion;
+                      ref.read(chatGptProvider.notifier).ask(
+                            Chat(text: _controller.text),
+                          );
 
-                          _conversations.add(
-                            Chat(
-                              text: _controller.text,
-                              isChatGpt: isQuestion,
-                            ),
-                          );
-                          _controller.clear();
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
-                            duration: const Duration(milliseconds: 100),
-                            curve: Curves.easeOut,
-                          );
-                        },
-                      );
+                      _controller.clear();
                     },
                     icon: const Icon(Icons.send),
                   ),
