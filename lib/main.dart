@@ -27,29 +27,28 @@ class ChatGptApp extends StatelessWidget {
   }
 }
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _HomeState();
+  }
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends ConsumerState<Home> {
   final _controller = TextEditingController();
-
   final _scrollController = ScrollController();
-
-  final _conversations = <Chat>[
-    Chat(text: "some dummy question", isChatGpt: true),
-    Chat(text: "text"),
-    Chat(text: "text", isChatGpt: true),
-    Chat(text: "text"),
-    Chat(text: "text", isChatGpt: true),
-  ];
 
   var isQuestion = true;
 
-  // This widget is the root of your application.
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
