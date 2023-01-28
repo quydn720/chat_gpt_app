@@ -1,15 +1,10 @@
+import 'package:chat_gpt_app/chat_gpt_service.dart';
 import 'package:chat_gpt_app/color_schemes.g.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const ChatGptApp());
-}
-
-class Chat {
-  final bool isChatGpt;
-  final String text;
-
-  Chat({this.isChatGpt = false, required this.text});
+  runApp(const ProviderScope(child: ChatGptApp()));
 }
 
 class ChatGptApp extends StatelessWidget {
