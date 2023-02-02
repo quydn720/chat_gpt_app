@@ -71,7 +71,9 @@ class _HomeState extends ConsumerState<Home> {
         title: const Text('ChatGPT App'),
         actions: [
           IconButton(
-            onPressed: ref.read(chatGptProvider).clear,
+            onPressed: () {
+              ref.read(chatGptProvider.notifier).clear();
+            },
             icon: const Icon(Icons.delete),
           )
         ],
@@ -116,16 +118,28 @@ class _HomeState extends ConsumerState<Home> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: TextField(controller: _controller)),
-                  IconButton(
-                    onPressed: () {
-                      ref.read(chatGptProvider.notifier).ask(
-                            Chat(text: _controller.text),
-                          );
+                  Expanded(
+                    child: TextField(
+                      minLines: 1,
+                      maxLines: 5,
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            ref.read(chatGptProvider.notifier).ask(
+                                  Chat(
+                                    text: _controller.text,
+                                    created:
+                                        DateTime.now().millisecondsSinceEpoch,
+                                  ),
+                                );
 
-                      _controller.clear();
-                    },
-                    icon: const Icon(Icons.send),
+                            _controller.clear();
+                          },
+                          icon: const Icon(Icons.send),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
