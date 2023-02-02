@@ -24,15 +24,18 @@ class ChatGptService extends StateNotifier<List<Chat>> {
   void clear() => state = [];
 
   Future<void> ask(Chat question) async {
-    state = [...state, question];
+    if (question.text.isEmpty) return;
 
+    state = [...state, ChatState(question, 1)];
+
+    state = [...state, ChatState(Chat(text: '', isChatGpt: true), 0)];
     final result = await dio.postUri(
       uri,
       data: {
         "model": "text-davinci-003",
         "prompt": question.text,
         "temperature": 0.6,
-        "max_tokens": 100,
+        "max_tokens": 1000,
       },
       options: Options(
         headers: {
@@ -41,11 +44,18 @@ class ChatGptService extends StateNotifier<List<Chat>> {
         },
       ),
     );
-
+    state.removeLast();
     Future.delayed(const Duration(seconds: 1), () {
       state = [
         ...state,
+        ChatState(
+          Chat(
+            text: (result.data["choices"][0]['text'] as String).trim(),
             created: (result.data['created'] as int) * 1000,
+            isChatGpt: true,
+          ),
+          1,
+        ),
       ];
     });
   }
