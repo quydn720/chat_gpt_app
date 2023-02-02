@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_gpt_app/chat_gpt_service.dart';
 import 'package:chat_gpt_app/color_schemes.g.dart';
 import 'package:flutter/material.dart';
@@ -135,3 +136,14 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 }
+
+            child: chat.chatState == 0
+                ? AnimatedTextKit(
+                    animatedTexts: [TypewriterAnimatedText('...')])
+                // const Dots()
+                :
+                // AnimatedTextKit(
+                //     totalRepeatCount: 1,
+                //     animatedTexts: [TypewriterAnimatedText(chat.chat.text)],
+                //   ),
+                Text(chat.chat.text, softWrap: true),
