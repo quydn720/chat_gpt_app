@@ -151,6 +151,44 @@ class _HomeState extends ConsumerState<Home> {
   }
 }
 
+class ChatBubble extends StatelessWidget {
+  const ChatBubble({Key? key, required this.chat}) : super(key: key);
+
+  final ChatState chat;
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    String? date(int? created) {
+      if (created != null) {
+        final dateTime = DateTime.fromMillisecondsSinceEpoch(
+          chat.chat.created!,
+          isUtc: false,
+        );
+        final now = DateTime.now();
+        if (dateTime.difference(now).inDays <= 0) {
+          return '${dateTime.hour}:${dateTime.minute}';
+        }
+        if (dateTime.difference(now).inDays <= 0) {
+          return '${dateTime.hour}:${dateTime.minute}';
+        }
+        return dateTime.toString();
+      }
+      return null;
+    }
+
+    return Column(
+      children: [
+        Text(date(chat.chat.created) ?? ''),
+        Card(
+          margin: EdgeInsets.only(
+            left: chat.chat.isChatGpt ? 0 : 70,
+            right: chat.chat.isChatGpt ? 70 : 0,
+            bottom: 12,
+          ),
+          color: chat.chat.isChatGpt ? Colors.white : colorScheme.primary,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
             child: chat.chatState == 0
                 ? AnimatedTextKit(
                     animatedTexts: [TypewriterAnimatedText('...')])
@@ -161,3 +199,10 @@ class _HomeState extends ConsumerState<Home> {
                 //     animatedTexts: [TypewriterAnimatedText(chat.chat.text)],
                 //   ),
                 Text(chat.chat.text, softWrap: true),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
