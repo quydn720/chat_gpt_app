@@ -45,10 +45,7 @@ class ChatGptService extends StateNotifier<List<Chat>> {
     Future.delayed(const Duration(seconds: 1), () {
       state = [
         ...state,
-        Chat(
-          text: (result.data["choices"][0]['text'] as String).trim(),
-          isChatGpt: true,
-        )
+            created: (result.data['created'] as int) * 1000,
       ];
     });
   }
@@ -57,6 +54,11 @@ class ChatGptService extends StateNotifier<List<Chat>> {
 class Chat {
   final bool isChatGpt;
   final String text;
+  final int? created;
 
-  Chat({this.isChatGpt = false, required this.text});
+  Chat({
+    this.isChatGpt = false,
+    this.created,
+    required this.text,
+  });
 }
