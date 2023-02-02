@@ -3,15 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'constants.dart';
 
-final chatGptProvider = StateNotifierProvider<ChatGptService, List<Chat>>(
+final chatGptProvider = StateNotifierProvider<ChatGptService, List<ChatState>>(
   (ref) => ChatGptService(chats: []),
 );
 
-class ChatGptService extends StateNotifier<List<Chat>> {
-  final List<Chat> chats;
-  final int chatState; // 0: loading, 1: loaded,...
+class ChatState {
+  final Chat chat;
+  final int chatState;
 
-  ChatGptService({this.chatState = 0, required this.chats}) : super([]);
+  ChatState(this.chat, this.chatState);
+}
+
+class ChatGptService extends StateNotifier<List<ChatState>> {
+  final List<ChatState> chats;
+
+  ChatGptService({required this.chats}) : super([]);
 
   Uri uri = Uri(
     scheme: 'https',
