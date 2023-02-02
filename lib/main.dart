@@ -89,26 +89,10 @@ class _HomeState extends ConsumerState<Home> {
                   children: c.map(
                     (e) {
                       return Align(
-                        alignment: e.isChatGpt
+                        alignment: e.chat.isChatGpt
                             ? Alignment.centerLeft
                             : Alignment.centerRight,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: e.isChatGpt ? 0 : 70,
-                            right: e.isChatGpt ? 70 : 0,
-                            bottom: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: e.isChatGpt
-                                ? colorScheme.outline
-                                : colorScheme.primary,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Text(e.text, softWrap: true),
-                          ),
-                        ),
+                        child: ChatBubble(chat: e),
                       );
                     },
                   ).toList(),
